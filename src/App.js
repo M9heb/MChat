@@ -1,8 +1,8 @@
-// import Register from "./Pages/Register";
+import Register from "./Pages/Register";
 import "./Style.scss";
-import Home from "./Pages/Home";
+// import Home from "./Pages/Home";
 function App() {
-  return <Home />;
+  return <Register />;
 }
 
 export default App;
