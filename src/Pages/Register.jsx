@@ -1,22 +1,24 @@
 import React, { useState } from "react";
 import Add from "../img/img.svg";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, storage } from "../firebase";
-import { db } from "../firebase";
+import { auth, storage, db } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-
 import { doc, setDoc } from "firebase/firestore";
 import { useNavigate, Link } from "react-router-dom";
 
 export default function Register() {
   const [err, setErr] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  async function handleSubmit(e) {
+
+  const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const displayName = e.target[0].value;
     const email = e.target[1].value;
     const password = e.target[2].value;
     const file = e.target[3].files[0];
+
     try {
       //Create user
       const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -47,26 +49,26 @@ export default function Register() {
           } catch (err) {
             console.log(err);
             setErr(true);
-            // setLoading(false);
+            setLoading(false);
           }
         });
       });
     } catch (err) {
       setErr(true);
-      // setLoading(false);
+      setLoading(false);
     }
-  }
-
+  };
   return (
     <div className="formContainer">
       <div className="formWrapper">
         <span className="logo">MChat</span>
         <span className="title">Register</span>
         <form onSubmit={handleSubmit}>
-          <input type="text" placeholder="Username" />
-          <input type="email" placeholder="email" />
-          <input type="password" placeholder="password" />
+          <input required type="text" placeholder="Username" />
+          <input required type="email" placeholder="email" />
+          <input required type="password" placeholder="password" />
           <input
+            required
             style={{ display: "none" }}
             type="file"
             id="file"
@@ -76,7 +78,7 @@ export default function Register() {
             <img src={Add} alt="" />
             <span>Add an avatar</span>
           </label>
-          <button>Sign up</button>
+          <button isabled={loading}>Sign up</button>
           {err && <span>Something went wrong</span>}
         </form>
         <p>

@@ -14,7 +14,6 @@ export default function Login() {
       navigate("/");
     } catch (err) {
       setErr(true);
-      // setLoading(false);
     }
   }
   return (
@@ -23,8 +22,8 @@ export default function Login() {
         <span className="logo">MChat</span>
         <span className="title">Login</span>
         <form onSubmit={handleSubmit}>
-          <input type="email" placeholder="email" />
-          <input type="password" placeholder="password" />
+          <input required type="email" placeholder="email" />
+          <input required type="password" placeholder="password" />
 
           <button>Sign in</button>
           {err && <span>Something went wrong</span>}
