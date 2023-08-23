@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import Add from "../img/img.svg";
+import Add from "../img/addAvatar.png";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, storage, db } from "../firebase";
+import { auth, db, storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function Register() {
+const Register = () => {
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -58,27 +58,31 @@ export default function Register() {
       setLoading(false);
     }
   };
+
   return (
     <div className="formContainer">
       <div className="formWrapper">
         <span className="logo">MChat</span>
         <span className="title">Register</span>
         <form onSubmit={handleSubmit}>
-          <input required type="text" placeholder="Username" />
-          <input required type="email" placeholder="email" />
-          <input required type="password" placeholder="password" />
+          <input required type="text" placeholder="display name" />
           <input
             required
-            style={{ display: "none" }}
-            type="file"
-            id="file"
-            placeholder="user avaar"
+            type="email"
+            placeholder="email (enter a valid email)"
           />
+          <input
+            required
+            type="password"
+            placeholder="password (at least 8 characters)"
+          />
+          <input required style={{ display: "none" }} type="file" id="file" />
           <label htmlFor="file">
             <img src={Add} alt="" />
-            <span>Add an avatar</span>
+            <span>Add an avatar (required)</span>
           </label>
-          <button isabled={loading}>Sign up</button>
+          <button disabled={loading}>Sign up</button>
+          {loading && "Uploading and compressing the image please wait..."}
           {err && <span>Something went wrong</span>}
         </form>
         <p>
@@ -87,4 +91,6 @@ export default function Register() {
       </div>
     </div>
   );
-}
+};
+
+export default Register;

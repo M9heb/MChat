@@ -1,9 +1,8 @@
 import React, { useContext, useState } from "react";
-import Attach from "../img/Attach.svg";
-import Image from "../img/Image.svg";
+import Img from "../img/img.png";
+import Attach from "../img/attach.png";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
-import { v4 as uuid } from "uuid";
 import {
   arrayUnion,
   doc,
@@ -12,7 +11,9 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db, storage } from "../firebase";
+import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+
 const Input = () => {
   const [text, setText] = useState("");
   const [img, setImg] = useState(null);
@@ -20,7 +21,8 @@ const Input = () => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
-  const handleSend = async () => {
+  const handleSend = async (event) => {
+    event.preventDefault();
     if (img) {
       const storageRef = ref(storage, uuid());
 
@@ -68,18 +70,7 @@ const Input = () => {
       },
       [data.chatId + ".date"]: serverTimestamp(),
     });
-    await updateDoc(doc(db, "userChats", currentUser.uid), {
-      [data.chatId + ".lastMessage"]: {
-        text,
-      },
-      [data.chatId + ".date"]: serverTimestamp(),
-    });
-    await updateDoc(doc(db, "userChats", data.user.uid), {
-      [data.chatId + ".lastMessage"]: {
-        text,
-      },
-      [data.chatId + ".date"]: serverTimestamp(),
-    });
+
     setText("");
     setImg(null);
   };
@@ -87,23 +78,24 @@ const Input = () => {
     <div className="input">
       <input
         type="text"
-        placeholder="Type your message here..."
+        placeholder="Type something..."
+        onChange={(e) => setText(e.target.value)}
         value={text}
-        onChange={(event) => setText(event.target.value)}
       />
-      <div className="send">
+      <form className="send" onSubmit={(event) => handleSend(event)}>
         <img src={Attach} alt="" />
         <input
+          disabled={true}
           type="file"
           style={{ display: "none" }}
           id="file"
-          onChange={(event) => setImg(event.target.files[0])}
+          onChange={(e) => setImg(e.target.files[0])}
         />
         <label htmlFor="file">
-          <img src={Image} alt="" />
+          <img src={Img} alt="" />
         </label>
-        <button onClick={handleSend}>Send</button>
-      </div>
+        <button type="submit">Send</button>
+      </form>
     </div>
   );
 };
